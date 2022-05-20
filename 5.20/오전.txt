@@ -1,0 +1,274 @@
+5/20(금) ~ 5/26(목) 미니프로젝트 	=> 5 day
+
+5/27 ~ 6/7 : Web Front-end		=> 6 day
+
+=======================================
+시작 3일 : 하둡
+
+4일 : 미니프로젝트 
+
+4일 : web Front-end
+
+	Spring
+
+
+
+CentOS
+Hadoop 완전분산 Mode
+=> 	1.빅데이터 (분산)저장
+	2병렬처리
+
+Hadoop cluter => 군집을 이루어서
+
+컴퓨터가 
+Master 역할을하고
+
+Slave	=> 분산처리
+
+
+
+
+
+Virtual Mashine 4 ea
+
+-완전분산mode
+1ea  Master node
+3ea  slave node
+
+
+Master CentOS : Gui version
+slave CentOS    : minimal mode	
+-----------------------
+4ea 가상머신 설치
+
+1 	Master
+
+3 	slave1
+   	slave2
+   	slave3
+
+---------------------------------
+다운방법
+
+
+왼쪽 위 머신(M) > 새로만들기
+
+이름 : master
+머신폴더 : 그대로 virtualBoxVMs
+종류 : linux
+버전 : Red Hat 64bit
+
+옹량 디폴트값 2048로 수정 후 다음  
+다음
+다음
+다음
+
+가상 하드 디스크만들기에서  8GB 를 20GB로 수정
+
+★master (가상머신)생성완료
+
+우분투 왼쪽위 파일 누르고 환경설정들어가서
+네트워크칸 들어가고 없다면 초록색 버튼 눌러서 NatNetwork 추가
+
+master(가상머신)에 마우스 가까이 대고 오른쪽눌러서 설정들어가기
+네트워크칸 들어가기
+다음에 연결됨(A) : (기존)NAT 에서 	(바꿀것)NAT 네트워크  <<로 설정
+확인 누르
+
+master(가상머신)에 마우스 가까이 대고 오른쪽눌러서 설정들어가기
+저장소 들어가기
+비어있음 누르고 파란색 디스크모양 누르고
+다운받은centos 넣기
+
+확인누르고 나와서 시작 
+↑ 한번 누르고 엔터
+한국어로 설정하고 완료누르기
+
+현지화에서
+keaboard 누르고 이상있는지 확인후 없으면 왼쪽 완료 누르기
+
+우분투 왼쪽위 파일 누르고 환경설정들어가서
+입력누르고 가상머신 누르고 호스트키 조합누른뒤 왼쪽윈도우키 누르고 확인
+
+master 현지화에서
+네트워크 & 호스트 이름 에서 이더넷 켬
+192.168.100.
+
+Host Name: master 로 바꾼뒤 적용
+
+root id : root
+root pw : root
+
+사용자 계정 : kang
+사용자 pw :   kdh
+
+
+머신 새로만들기 <slave1>
+이름 : slave1
+머신폴더 : 그대로 virtualBoxVMs
+종류 : linux
+버전 : Red Hat 64bit
+
+옹량 디폴트값 2048 확인후 다음  
+다음
+다음
+다음
+
+
+가상 하드 디스크만들기에서  8GB 를 10GB로 수정
+
+master 는
+---------------------------------------------
+slave 
+
+shutdown -h now	: 	지금바로 끄겠다.
+
+slave복제 완벽한복제체크하고 , 이름만 다르게
+
+su -  루트아이디로 접속
+루트비번치기
+
+slave host이름 바꾸기★
+hostnamectl set-hostname slave2 : 호스트이름바꾸기
+reboot	<<<<	껏다 키면 이름이 바뀌어져있다
+
+
+
+동시에 master  , slave1 , slave2 , slave3 가상머신 시작
+master
+root 아이디로 들어가기
+kang(계정id)
+kdh(계정pw)
+su - (최고관리자 접속 권한 요청)
+root (루트비번)
+
+★★★★★★★★★고정 IP 설정★★★★★★★★★
+마스터 가서
+루트용 터미널
+cd
+
+
+★1★
+vi /etc/sysconfig/network-scripts/ifcfg-enp0s3
+:set nu
+4 BOOTPROTO= static 으로 수정  ●[고정ip선언]
+5번줄에서 엔터누르고
+6 IPADDR=192.168.100.150 ( 슬레이브는 각각 151,152,153 ) 치기
+7 NETMASK=255.255.255.0
+8 GTAEWAY=192.168.100.1
+9. DNS1=168.126.63.1
+●[6~9번줄은 고정선언 할 내용들을 쓴것]
+
+
+★2★
+vi /etc/hosts 엔터
+위 2줄 # 처리
+192.168.100.150 master
+192.168.100.151 slave1
+192.168.100.152 slave2
+192.168.100.153 slave3
+●=>  master~ slave3 까지 소통할 수 있게 하기위해서 만든것임  
+
+★고정 IP 설정★
+slave1 ~ slave3 까지 위에 ★1★    ,   ★2★ 두개 똑같이 쓰기
+
+
+
+
+Virtual Mashine (버추얼머신) 가서
+도구 누르고 
+햄버거메뉴 > 네트워크
+속성 or 한개 있는거 더블클릭
+ipv4 192.168.100.1 로 수정
+
+마스터 루트 터미널
+reboot 해서 껏다 키기
+
+버추얼머신
+파일 > 환경설정 > 네트워크
+NatNetwork 추가하고 바로편집
+192.168.100.0/24 하면 연결됌
+
+
+
+
+
+
+파이어폭스에 가서 java.sun.com 들어가서 쿠키승인
+java8u3333 누르기
+맨밑에 jdk 1415MB jdk-8u333-linux-x64tar.gz 다운받기
+
+hadoop.apache.org 들어가서 3.2.3 binary 누르기
+https://dlcdn. tar.gz 형식 파일 다운받고 터미널 가기
+
+cd /다운로드
+ll 		< 디렉토리 안 내용확인
+mv 파일이름 (파일이름) ../  	<< ../ 은 상위디렉토리로 이동
+tar -xvf 파일이름		<tar 형식 파일 압축해제
+
+경로설정해주기
+vi .bashrc 
+
+
+$ : 맨마지막
+^ : 맨처음( 캐럿 )
+~ : tilde ( 현재 사용자의 홈 디렉토리 )
+
+
+
+★★
+root 계정 으로 실행
+vi /etc/yum.repos.d 하면 vi편집기로 들어가지기 때문에
+cd !$ <! 는 가져오다 $ 는 맨마지막>
+ll
+
+vi CentOS-Linux-Extras.repo 해서 밑에꺼 쓰기
+
+master , slave1~ slave3
+
+mirrorlist		mirrorlist	>>	vault
+baseurl		mirrorlist	>>	vault
+gpgcheck 	1 	>>	0
+로 바꾸기 
+
+
+마스터 터미널와서
+ifconfig
+
+
+네트워크 설정 1로 또 바꿔서
+ping slave1 (~3) 쳐보기
+
+
+slave1~slave3
+root 계정
+yum install net-tools
+yum install rsync
+yum install wget
+
+error 되서 안되면
+버추얼박스에서
+slave 오른쪽에서 네트워크1로 바꾸기
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
